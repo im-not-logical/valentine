@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    background:#ffd6e7;
+    font-family:'Great Vibes', cursive;
+    overflow:hidden;
+}
+
+.title{
+    font-size:110px;
+    color:#c2185b;
+    font-weight:bold;
+}
+
+.screen{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+
+#screen2{display:none;}
+
+button{
+    font-size:32px;
+    margin:20px;
+    padding:14px 40px;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+    background:#ff69b4;
+    color:white;
+}
+
+.decor{
+    position:absolute;
+    width:260px;
+}
+
+/* rotating */
+.rotate-cw{ animation:spinCW 4s linear infinite; transform-origin:center;}
+.rotate-ccw{ animation:spinCCW 4s linear infinite; transform-origin:center;}
+
+@keyframes spinCW{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+@keyframes spinCCW{ from{transform:rotate(360deg);} to{transform:rotate(0deg);} }
+
+/* floating stickers */
+.sticker{
+    position:absolute;
+    font-size:32px;
+    animation:float 8s linear infinite;
+}
+@keyframes float{
+    from{transform:translateY(100vh);}
+    to{transform:translateY(-10vh);}
+}
+
+/* confetti */
+.confetti{
+    position:absolute;
+    width:10px;
+    height:10px;
+    border-radius:2px;
+    pointer-events:none;
+}
+
+.yay{
+    position:absolute;
+    font-size:50px;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:bold;
+    color:#c2185b;
+    animation:yayFloat 1.6s ease-out forwards;
+}
+@keyframes yayFloat{
+    to{ transform:translateY(-120px); opacity:0; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SCREEN 1 -->
+<div id="screen1" class="screen">
+
+    <!-- four corner placeholders -->
+    <img src="adi-background-gone.png" class="decor rotate-cw" style="top:5%;left:5%;">
+    <img src="flowers.png" class="decor rotate-ccw" style="top:5%;right:5%;">
+    <img src="flowers.png" class="decor rotate-cw" style="bottom:5%;left:5%;">
+    <img src="adi-background-gone.png" class="decor rotate-ccw" style="bottom:5%;right:5%;">
+
+    <h1 class="title">Will you Valentine with me?</h1>
+
+    <div>
+        <button onclick="yesClicked()">YES 😍</button>
+        <button id="noBtn" onmouseover="moveNo()">NO 😱</button>
+    </div>
+</div>
+
+<!-- SCREEN 2 -->
+<div id="screen2" class="screen" onclick="celebrate(event)">
+    <img src="adi-background-gone.png" class="decor rotate-cw" style="top:5%;left:5%;">
+    <img src="adi-background-gone-smile.png" class="decor rotate-ccw" style="top:5%;right:5%;">
+    <img src="adi-background-gone-smile.png" class="decor rotate-cw" style="bottom:5%;left:5%;">
+    <img src="adi-background-gone.png" class="decor rotate-ccw" style="bottom:5%;right:5%;">
+
+    <h1 class="title">My Dobiii Yayyy I Loveeee Youuu ❤️</h1>
+    <h6> click click </h6>
+</div>
+
+<script>
+function moveNo(){
+    const btn=document.getElementById("noBtn");
+    const x=Math.random()*500-250;
+    const y=Math.random()*300-150;
+    btn.style.transform=`translate(${x}px,${y}px)`;
+}
+
+function yesClicked(){
+    document.getElementById("screen1").style.display="none";
+    document.getElementById("screen2").style.display="flex";
+
+    for(let i=0;i<40;i++){
+        const s=document.createElement("div");
+        s.className="sticker";
+        s.innerHTML = Math.random()>0.5 ? "🌹" : "❤️";
+        s.style.left=Math.random()*100+"vw";
+        s.style.animationDuration=(5+Math.random()*6)+"s";
+        document.body.appendChild(s);
+    }
+}
+
+const words = ['YAY!!!','BABYYYY','CUTEYY','SO CUTEEEEE','I LOVE UU','❤️', 'DOBIII', 'STOOOPIDDDD'];
+
+function celebrate(e){
+    const x=e.clientX;
+    const y=e.clientY;
+
+    for(let i=0;i<40;i++){
+        const c=document.createElement("div");
+        c.className="confetti";
+        c.style.left=x+"px";
+        c.style.top=y+"px";
+        c.style.background=`hsl(${Math.random()*360},100%,60%)`;
+        document.body.appendChild(c);
+
+        const angle=Math.random()*2*Math.PI;
+        const velocity=100+Math.random()*150;
+        const dx=Math.cos(angle)*velocity;
+        const dy=Math.sin(angle)*velocity;
+
+        c.animate([
+            {transform:"translate(0,0)", opacity:1},
+            {transform:`translate(${dx}px,${dy+200}px) rotate(720deg)`, opacity:0}
+        ],{ duration:1200, easing:"ease-out" });
+
+        setTimeout(()=>c.remove(),1200);
+    }
+
+    const text=document.createElement("div");
+    text.className="yay";
+    text.innerHTML = words[Math.floor(Math.random()*words.length)];
+    text.style.left=x+"px";
+    text.style.top=y+"px";
+    document.body.appendChild(text);
+    setTimeout(()=>text.remove(),1600);
+}
+</script>
+
+</body>
+</html>
